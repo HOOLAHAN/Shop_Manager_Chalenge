@@ -12,9 +12,14 @@ Otherwise, [follow this recipe to design and create the SQL schema for your tabl
 
 ```
 # EXAMPLE
-Table: music_library
+
+Table: artists
 Columns:
-id | title 
+id | name | genre
+
+Table: albums
+Columns
+id | title | release_year | artist_id
 ```
 
 ## 2. Create Test SQL seeds
@@ -24,17 +29,31 @@ Your tests will depend on data stored in PostgreSQL to run.
 If seed data is provided (or you already created it), you can skip this step.
 
 ```sql
--- EXAMPLE
--- (file: spec/seeds_{table_name}.sql)
+-- (file: spec/seeds_artists.sql)
+
 -- Write your SQL seed here. 
 -- First, you'd need to truncate the table - this is so our table is emptied between each test run,
 -- so we can start with a fresh state.
 -- (RESTART IDENTITY resets the primary key)
-TRUNCATE TABLE students RESTART IDENTITY; -- replace with your own table name.
+TRUNCATE TABLE artists RESTART IDENTITY; -- replace with your own table name.
 -- Below this line there should only be `INSERT` statements.
 -- Replace these statements with your own seed data.
-INSERT INTO students (name, cohort_name) VALUES ('David', 'April 2022');
-INSERT INTO students (name, cohort_name) VALUES ('Anna', 'May 2022');
+
+INSERT INTO artists (name, genre) VALUES('Pixies', 'Rock');
+INSERT INTO artists (name, genre) VALUES('ABBA', 'Pop');
+
+-- (file: spec/seeds_albums.sql)
+
+-- Write your SQL seed here. 
+-- First, you'd need to truncate the table - this is so our table is emptied between each test run,
+-- so we can start with a fresh state.
+-- (RESTART IDENTITY resets the primary key)
+TRUNCATE TABLE albums RESTART IDENTITY; -- replace with your own table name.
+-- Below this line there should only be `INSERT` statements.
+-- Replace these statements with your own seed data.
+
+INSERT INTO albums (title, release_year, artist_id) VALUES('Doolittle', '1989', '1');
+INSERT INTO albums (title, release_year, artist_id) VALUES('Surfer Rosa', '1988', '1');
 ```
 
 Run this SQL file on the database to truncate (empty) the table, and insert the seed data. Be mindful of the fact any existing records in the table will be deleted.
@@ -58,6 +77,12 @@ end
 # (in lib/artist_repository.rb)
 class ArtistRepository
 end
+
+class Album
+end
+
+class AlbumRepository
+end
 ```
 
 ## 4. Implement the Model class
@@ -79,7 +104,12 @@ end
 #
 # student = Student.new
 # student.name = 'Jo'
-# student.name
+
+class Album
+  # Replace the attributes by your own columns.
+  attr_accessor :id, :title, :release_year, :artist_id
+end
+
 ```
 
 *You may choose to test-drive this class, but unless it contains any more logic than the example above, it is probably not needed.*
@@ -114,10 +144,6 @@ class AlbumRepository
     # SELECT id, title, release_year, artist_id FROM albums;
     # Returns an array of Album objects.
   end
-
-  def find
-    
-  end
   
 end
 ```
@@ -131,12 +157,22 @@ These examples will later be encoded as RSpec tests.
 ```ruby
 # EXAMPLES
 # 1
-# Get all students
+# Get all Artists
 repo = ArtistRepository.new
 artists = repo.all 
 artists.length # => 2
 artists.first.id # => '1'
 artists.first.name # => 'Pixies'
+
+# 2
+# Get all Albums
+repo = AlbumRepository.new
+albums = repo.all 
+expect(albums.length).to eq (2)
+expect(albums.first.id).to eq ('1')
+expect(albums.first.title).to eq ('Doolittle')
+expect(albums.first.release_year).to eq ('1989')
+expect(albums.first.artist_id).to eq ('1')
 
 ```
 
@@ -149,19 +185,18 @@ Running the SQL code present in the seed file will empty the table and re-insert
 This is so you get a fresh table contents every time you run the test suite.
 
 ```ruby
-# EXAMPLE
-# file: spec/student_repository_spec.rb
-def reset_students_table
-  seed_sql = File.read('spec/seeds_students.sql')
-  connection = PG.connect({ host: '127.0.0.1', dbname: 'students' })
-  connection.exec(seed_sql)
-end
-describe StudentRepository do
-  before(:each) do 
-    reset_students_table
+
+
+  def reset_albums_table
+    seed_sql = File.read('spec/seeds_albums.sql')
+    connection = PG.connect({ host: '127.0.0.1', dbname: 'music_library_test' })
+    connection.exec(seed_sql)
   end
-  # (your tests will go here).
-end
+
+  before(:each) do
+    reset_albums_table
+  end
+
 ```
 
 ## 8. Test-drive and implement the Repository class behaviour
