@@ -39,3 +39,7 @@ INSERT INTO artists
 INSERT INTO albums 
   (title, release_year, artist_id)
   VALUES('Get Rich Or Die Tryin', '2003', '5');
+
+  INSERT INTO movies
+	(title, genre, release_year)
+	VALUES('Shrek', 'Animation', 2001);

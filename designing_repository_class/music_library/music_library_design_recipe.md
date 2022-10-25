@@ -103,6 +103,21 @@ class ArtistRepository
     # SELECT id, name, genre FROM artists;
     # Returns an array of Artist objects.
   end
+
+end
+
+class AlbumRepository
+  # Selecting all records
+  # No arguments
+  def all
+    # Executes the SQL query:
+    # SELECT id, title, release_year, artist_id FROM albums;
+    # Returns an array of Album objects.
+  end
+
+  def find
+    
+  end
   
 end
 ```
