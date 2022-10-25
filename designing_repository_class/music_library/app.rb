@@ -10,7 +10,7 @@ DatabaseConnection.connect('music_library')
 artist_repository = ArtistRepository.new
 album_repository = AlbumRepository.new
 
-
+=begin
 artist_repository.all.each do |artist|
   p artist
 end
@@ -21,6 +21,6 @@ end
 
 artist = artist_repository.find(1)
 puts artist.name
-
-album = album_repository.find(1)
+=end
+album = album_repository.find(3)
 puts album.title

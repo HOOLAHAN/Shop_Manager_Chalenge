@@ -154,8 +154,13 @@ class AlbumRepository
     # Returns an array of Album objects.
   end
 
-  def find(id)
-    # returns a single record using its id. It will perform a filtered SELECT query to retrieve that single row.
+# select a single record
+# given the id in argument (a number)
+
+def find(id)
+    # executes the SQL query
+    # SELECT id, title, release_year, artist_id FROM albums WHERE id = $1
+    # Returns a single Album object
   end
   
 end
@@ -196,7 +201,6 @@ artist.genre # => 'Pop'
 repo = AlbumRepository.new
 albums = repo.all 
 expect(albums.length).to eq (2)
-expect(albums.first.id).to eq ('1')
 expect(albums.first.title).to eq ('Doolittle')
 expect(albums.first.release_year).to eq ('1989')
 expect(albums.first.artist_id).to eq ('1')
@@ -220,6 +224,15 @@ Running the SQL code present in the seed file will empty the table and re-insert
 This is so you get a fresh table contents every time you run the test suite.
 
 ```ruby
+  def reset_artists_table
+    seed_sql = File.read('spec/seeds_artists.sql')
+    connection = PG.connect({ host: '127.0.0.1', dbname: 'music_library_test' })
+    connection.exec(seed_sql)
+  end
+
+  before(:each) do
+    reset_artists_table
+  end
 
 
   def reset_albums_table
