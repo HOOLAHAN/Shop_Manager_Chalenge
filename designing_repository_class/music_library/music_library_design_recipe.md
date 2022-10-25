@@ -134,6 +134,15 @@ class ArtistRepository
     # Returns an array of Artist objects.
   end
 
+# select a single record
+# given the id in argument (a number)
+
+def find (id)
+  # executes the SQL query
+  # SELECT id, name, genre FROM artists WHERE id = $1
+  # Returns a single Artist object
+end
+
 end
 
 class AlbumRepository
@@ -143,6 +152,10 @@ class AlbumRepository
     # Executes the SQL query:
     # SELECT id, title, release_year, artist_id FROM albums;
     # Returns an array of Album objects.
+  end
+
+  def find(id)
+    # returns a single record using its id. It will perform a filtered SELECT query to retrieve that single row.
   end
   
 end
@@ -165,6 +178,20 @@ artists.first.id # => '1'
 artists.first.name # => 'Pixies'
 
 # 2
+# Get a single artist
+repo = ArtistRepository.new
+artist = repo.find(1)
+artist.name # => 'Pixies'
+artist.genre # => 'Rock'
+
+# 3
+# Get a single artist
+repo = ArtistRepository.new
+artist = repo.find(2)
+artist.name # => 'ABBA'
+artist.genre # => 'Pop'
+
+# 4
 # Get all Albums
 repo = AlbumRepository.new
 albums = repo.all 
@@ -173,6 +200,14 @@ expect(albums.first.id).to eq ('1')
 expect(albums.first.title).to eq ('Doolittle')
 expect(albums.first.release_year).to eq ('1989')
 expect(albums.first.artist_id).to eq ('1')
+
+# 5
+# finds a single record using its id
+repo = AlbumRepository.new
+album = repo.find(1)  # Performs a SELECT query and returns a single Album object.
+album.title # => 'Doolittle'
+album.release_year # => '1989'
+album.artist_id # => '1'
 
 ```
 
