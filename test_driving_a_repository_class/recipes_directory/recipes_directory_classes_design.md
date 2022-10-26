@@ -165,7 +165,7 @@ This is so you get a fresh table contents every time you run the test suite.
 
 ```ruby
 # EXAMPLE
-# file: spec/student_repository_spec.rb
+# file: spec/recipe_repository_spec.rb
 def reset_recipes_table
   seed_sql = File.read('spec/seeds_recipes.sql')
   connection = PG.connect({ host: '127.0.0.1', dbname: 'recipes' })
