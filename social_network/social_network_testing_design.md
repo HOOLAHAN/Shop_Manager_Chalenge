@@ -8,7 +8,7 @@ If the table is already created in the database, you can skip this step.
 
 Otherwise, [follow this recipe to design and create the SQL schema for your table](./single_table_design_recipe_template.md).
 
-*In this template, we'll use an example table `students`*
+_In this template, we'll use an example table `students`_
 
 ```
 # EXAMPLE
@@ -31,7 +31,7 @@ If seed data is provided (or you already created it), you can skip this step.
 ```sql
 -- EXAMPLE
 -- (file: spec/seeds_{table_name}.sql)
--- Write your SQL seed here. 
+-- Write your SQL seed here.
 -- First, you'd need to truncate the table - this is so our table is emptied between each test run,
 -- so we can start with a fresh state.
 -- (RESTART IDENTITY resets the primary key)
@@ -123,7 +123,7 @@ end
 
 ```
 
-*You may choose to test-drive this class, but unless it contains any more logic than the example above, it is probably not needed.*
+_You may choose to test-drive this class, but unless it contains any more logic than the example above, it is probably not needed._
 
 ## 5. Define the Repository Class interface
 
@@ -133,31 +133,86 @@ Using comments, define the method signatures (arguments and return value) and wh
 
 ```ruby
 # EXAMPLE
-# Table name: students
+# Table name: accounts
 # Repository class
-# (in lib/student_repository.rb)
-class StudentRepository
+# (in lib/account_repository.rb)
+class AccountRepository
   # Selecting all records
   # No arguments
   def all
     # Executes the SQL query:
-    # SELECT id, name, cohort_name FROM students;
-    # Returns an array of Student objects.
+    # SELECT id, email, username FROM accounts;
+    # Returns an array of Account objects.
   end
   # Gets a single record by its ID
   # One argument: the id (number)
   def find(id)
     # Executes the SQL query:
-    # SELECT id, name, cohort_name FROM students WHERE id = $1;
-    # Returns a single Student object.
+    # SELECT id, email, username FROM accounts WHERE id = $1;
+    # Returns a single Account object.
   end
-  # Add more methods below for each operation you'd like to implement.
-  # def create(student)
-  # end
-  # def update(student)
-  # end
-  # def delete(student)
-  # end
+
+  # creates an account
+  # with an account object
+  def create(account)
+  # Executes the SQL query:
+  # INSERT INTO accounts (email, username) VALUES ($1, $2);
+
+  #returns nothing
+  end
+
+  # delete an account
+  # with an account object
+  def delete(id)
+  # Executes the SQL query:
+  # DELETE FROM accounts WHERE id = $1;
+
+  # returns nothing
+  end
+end
+```
+
+```ruby
+# EXAMPLE
+# Table name: posts
+# Repository class
+# (in lib/post_repository.rb)
+class PostRepository
+  # Selecting all records
+  # No arguments
+  def all
+    # Executes the SQL query:
+    # SELECT id, title, content, views, account_id FROM posts;
+
+    # Returns an array of Post objects.
+  end
+
+  # Gets a single record by its ID
+  # One argument: the id (number)
+  def find(id)
+    # Executes the SQL query:
+    # SELECT id, title, content, views, account_id FROM posts WHERE id = $1;
+
+    # Returns a single Post object.
+  end
+
+  # creates an post
+  # with an post object
+  def create(post)
+  # Executes the SQL query:
+  # INSERT INTO posts (title, content, views) VALUES ($1, $2, $3);
+
+  #returns nothing
+  end
+
+  # delete an post
+  # with an post object
+  def delete(id)
+  # Executes the SQL query:
+  # DELETE FROM posts WHERE id = $1;
+
+  # returns nothing
+  end
 end
 ```
 
@@ -170,24 +225,40 @@ These examples will later be encoded as RSpec tests.
 ```ruby
 # EXAMPLES
 # 1
-# Get all students
-repo = StudentRepository.new
-students = repo.all
-students.length # =>  2
-students[0].id # =>  1
-students[0].name # =>  'David'
-students[0].cohort_name # =>  'April 2022'
-students[1].id # =>  2
-students[1].name # =>  'Anna'
-students[1].cohort_name # =>  'May 2022'
+# Get all accounts
+repo = AccountRepository.new
+accounts = repo.all
+accounts.length # =>  2
+accounts[0].id # =>  1
+accounts[0].username # =>  'joelander'
+accounts[0].email # =>  'joe@test.com'
+accounts[1].id # =>  2
+accounts[1].username # =>  'iainhoolahan'
+accounts[1].email # =>  'iain@test.com'
+
 # 2
-# Get a single student
-repo = StudentRepository.new
-student = repo.find(1)
-student.id # =>  1
-student.name # =>  'David'
-student.cohort_name # =>  'April 2022'
-# Add more examples for each method
+# Get a single account
+repo = AccountRepository.new
+accounts = repo.find(1)
+accounts.id # =>  1
+accounts.username # =>  'joelander'
+accounts.email # =>  'joe@test.com'
+
+# 3
+# create an account
+repo = AccountRepository.new
+new_account = Account.new
+new_account.email = 'adon@test.com'
+new_account.username = 'adonlawley'
+
+repo.create(new_account) # => nil
+
+accounts = repo.all
+last_account = accounts.last
+
+expect(last_account.email).to eq 'adon@test.com'
+expect(last_account.username).to eq 'adonlawley'
+
 ```
 
 Encode this example as a test.
@@ -207,7 +278,7 @@ def reset_students_table
   connection.exec(seed_sql)
 end
 describe StudentRepository do
-  before(:each) do 
+  before(:each) do
     reset_students_table
   end
   # (your tests will go here).
