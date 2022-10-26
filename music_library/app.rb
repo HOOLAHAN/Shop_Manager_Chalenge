@@ -22,5 +22,5 @@ end
 artist = artist_repository.find(1)
 puts artist.name
 =end
-album = album_repository.find(3)
+album = album_repository.find(1)
 puts album.title

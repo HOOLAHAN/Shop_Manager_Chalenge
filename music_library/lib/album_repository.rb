@@ -27,7 +27,7 @@ class AlbumRepository
     # (The code now needs to convert the result to a Album object and return it)
     record = result_set[0]
     album = Album.new
-    album.id = record['id']
+    album.id = record[id]
     album.title = record['title']
     album.release_year = record['release_year']
     album.artist_id = record['artist_id']
@@ -50,7 +50,7 @@ class AlbumRepository
 
   def update(album)
     sql = 'UPDATE albums SET title = $1, release_year = $2, artist_id = $3 WHERE id = $4;'
-    sql_params = [album.title, album.release_year, album.artist_id, album.id]
+    sql_params = [album.title, album.release_year, album.artist_id, album.artist_id]
     DatabaseConnection.exec_params(sql, sql_params)
     return nil
   end

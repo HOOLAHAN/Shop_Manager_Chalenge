@@ -82,7 +82,6 @@ describe AlbumRepository do
     repo.update(album)
 
     updated_album = repo.find(1)
-
     expect(updated_album.title).to eq ('Something else')
     expect(updated_album.release_year).to eq ('2022')
     expect(updated_album.artist_id).to eq ('1')
