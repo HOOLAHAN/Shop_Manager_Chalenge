@@ -157,12 +157,16 @@ class AlbumRepository
 # select a single record
 # given the id in argument (a number)
 
-def find(id)
+  def find(id)
     # executes the SQL query
     # SELECT id, title, release_year, artist_id FROM albums WHERE id = $1
     # Returns a single Album object
   end
-  
+
+  def create(album) 
+
+  end
+
 end
 ```
 
@@ -212,6 +216,53 @@ album = repo.find(1)  # Performs a SELECT query and returns a single Album objec
 album.title # => 'Doolittle'
 album.release_year # => '1989'
 album.artist_id # => '1'
+
+# 6 
+# creates a new album
+repo = AlbumRepository.new
+new_album = Album.new
+new_album.title = 'Trompe le Monde'
+new_album.release_year = '1991'
+new_album.artist_id = '1'
+
+repo.create(new_album) # => nil
+
+albums = repo.all
+last_album = albums.last
+
+last_album.title# => 'Trompe le Monde'
+last_album.release_year# => '1991'
+last_album.artist_id# => '1'
+
+# 7 
+# deletes a record
+repo = AlbumRepository.new
+
+id_to_delete = 1
+
+repo.delete(id_to_delete)
+
+all_albums = repo.all
+all_albums.length #=> 1
+all_albums.first.id #=> '2'
+
+# 8
+# updates a record
+
+repo = AlbumRepository.new
+
+album = repo.find(1)
+album.title = 'Something else'
+album.release_year = '2022'
+album.artist_id = '1'
+
+repo.update(album)
+
+updated_album = repo.find(1)
+
+updated_album.title # => 'Something else'
+updated_album.release_year # => '2022'
+updated_album.artist_id # => '11'
 
 ```
 
