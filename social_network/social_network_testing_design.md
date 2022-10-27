@@ -292,6 +292,34 @@ posts[0].content # =>  'some content'
 posts[0].views # => 5
 posts[0].account_id # => 1
 
+# 7 
+# finds a post
+  repo = PostRepository.new
+  posts = repo.find(1)
+  expect(posts.title).to eq 'day1'
+  expect(posts.content).to eq 'some content'
+  expect(posts.views).to eq '5'
+  expect(posts.account_id).to eq '1'
+
+# 8
+# creates a post
+repo = PostRepository.new
+new_post = Post.new
+new_post.title = 'new post'
+new_post.content = 'some new content'
+new_post.views = '10'
+new_post.account_id = '1'
+
+repo.create(new_post) #=> nil
+
+posts = repo.all
+last_post = posts.last
+
+expect(last_post.title).to eq 'new post'
+expect(last_post.content).to eq 'some new content'
+expect(last_post.views).to eq '10'
+expect(last_post.account_id).to eq '1'
+
 
 
 ```

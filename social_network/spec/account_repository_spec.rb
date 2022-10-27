@@ -3,6 +3,7 @@
 require 'account_repository'
 
 describe AccountRepository do
+  
   def reset_accounts_table
     seed_sql = File.read('spec/seeds_accounts.sql')
     connection = PG.connect({ host: '127.0.0.1', dbname: 'social_network_test' })
@@ -27,7 +28,7 @@ describe AccountRepository do
     expect(accounts[1].email).to eq 'iain@test.com'
   end
 
-  it 'returns a single account' do
+  it 'finds a single account' do
     repo = AccountRepository.new
     accounts = repo.find(1)
     expect(accounts.id).to eq '1'
@@ -73,4 +74,5 @@ describe AccountRepository do
     expect(updated_account.email).to eq 'different@test.com'
     expect(updated_account.username).to eq 'different'
   end
+
 end
