@@ -1,5 +1,8 @@
 # Repository class
 # (in lib/account_repository.rb)
+
+require_relative './account'
+
 class AccountRepository
   # Selecting all records
   # No arguments
@@ -7,7 +10,19 @@ class AccountRepository
     # Executes the SQL query:
     # SELECT id, email, username FROM accounts;
     # Returns an array of Account objects.
+    sql = 'SELECT id, email, username FROM accounts;'
+    result_set = DatabaseConnection.exec_params(sql, [])
+    accounts = []
+    result_set.each do |account|
+      account = Account.new
+      account.id = account['id']
+      account.email = account['email']
+      account.username = account['username']
+      accounts << account
+    end
+    return accounts
   end
+
   # Gets a single record by its ID
   # One argument: the id (number)
   def find(id)

@@ -1,6 +1,9 @@
 # Table name: posts
 # Repository class
 # (in lib/post_repository.rb)
+
+require 'post'
+
 class PostRepository
   # Selecting all records
   # No arguments
