@@ -48,12 +48,9 @@ INSERT INTO accounts (username, email) VALUES ('iainhoolahan', 'iain@test.com');
 
 -- (RESTART IDENTITY resets the primary key)
 
-TRUNCATE TABLE accounts RESTART IDENTITY; -- replace with your own table name.
 TRUNCATE TABLE posts RESTART IDENTITY; -- replace with your own table name.
 -- Below this line there should only be `INSERT` statements.
 -- Replace these statements with your own seed data.
-INSERT INTO accounts (username, email) VALUES ('joelander', 'joe@test.com');
-INSERT INTO accounts (username, email) VALUES ('iainhoolahan', 'iain@test.com');
 
 INSERT INTO posts (title, content, views, account_id) VALUES ('day1', 'some content', 5, '1');
 INSERT INTO posts (title, content, views, account_id) VALUES ('day2', 'some more content', 10, '2');
@@ -284,6 +281,18 @@ updated_account = repo.find(1)
 expect(updated_account.email).to eq 'different@test.com'
 expect(updated_account.username).to eq 'different'
 
+# 6
+# Get all posts
+repo = PostRepository.new
+posts = repo.all
+posts.length # =>  2
+posts[0].id # =>  1
+posts[0].title # =>  'day1'
+posts[0].content # =>  'some content'
+posts[0].views # => 5
+posts[0].account_id # => 1
+
+
 
 ```
 
@@ -309,6 +318,20 @@ describe AccountRepository do
   end
   # (your tests will go here).
 end
+
+# file: spec/post_repository_spec.rb
+def reset_posts_table
+  seed_sql = File.read('spec/seeds_posts.sql')
+  connection = PG.connect({ host: '127.0.0.1', dbname: 'posts' })
+  connection.exec(seed_sql)
+end
+describe PostRepository do
+  before(:each) do
+    reset_posts_table
+  end
+  # (your tests will go here).
+end
+
 ```
 
 ## 8. Test-drive and implement the Repository class behaviour
