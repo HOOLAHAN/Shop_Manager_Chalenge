@@ -321,6 +321,30 @@ expect(last_post.views).to eq '10'
 expect(last_post.account_id).to eq '1'
 
 
+# 7
+# delete a post
+repo = PostRepository.new
+repo.delete(1)
+
+result_set = repo.all
+
+expect(result_set.length).to eq 1
+expect(result_set.first.id).to eq '2'
+
+# 8
+# update a post
+repo = PostRepository.new
+post = repo.find(1)
+
+post.title = 'a new title'
+post.content = 'some updated content'
+
+repo.update(post)
+
+updated_post = repo.find(1)
+expect(updated_post.title).to eq 'a new title'
+expect(updated_post.content).to eq 'some updated content'
+
 
 ```
 

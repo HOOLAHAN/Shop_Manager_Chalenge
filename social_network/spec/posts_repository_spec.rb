@@ -3,7 +3,6 @@
 require 'post_repository'
 
 describe PostRepository do
-
   def reset_posts_table
     seed_sql = File.read('spec/seeds_posts.sql')
     connection = PG.connect({ host: '127.0.0.1', dbname: 'social_network_test' })
@@ -52,7 +51,28 @@ describe PostRepository do
     expect(last_post.views).to eq '10'
     expect(last_post.account_id).to eq '1'
   end
+
+  it 'deletes a post' do
+    repo = PostRepository.new
+    repo.delete(1)
+
+    result_set = repo.all
+
+    expect(result_set.length).to eq 1
+    expect(result_set.first.id).to eq '2'
+  end
+
+  it 'update a post' do
+    repo = PostRepository.new
+    post = repo.find(1)
+
+    post.title = 'a new title'
+    post.content = 'some updated content'
+
+    repo.update(post)
+
+    updated_post = repo.find(1)
+    expect(updated_post.title).to eq 'a new title'
+    expect(updated_post.content).to eq 'some updated content'
+  end
 end
-
-
-
