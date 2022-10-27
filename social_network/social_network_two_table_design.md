@@ -131,5 +131,5 @@ CREATE TABLE posts (
 ## 5. Create the tables.
 
 ```bash
-psql -h 127.0.0.1 database_name < albums_table.sql
+psql -h 127.0.0.1 social_network_test < accounts_table.sql
 ```

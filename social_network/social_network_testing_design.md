@@ -63,7 +63,8 @@ INSERT INTO posts (title, content, views, account_id) VALUES ('day2', 'some more
 Run this SQL file on the database to truncate (empty) the table, and insert the seed data. Be mindful of the fact any existing records in the table will be deleted.
 
 ```bash
-psql -h 127.0.0.1 your_database_name < seeds_{table_name}.sql
+psql -h 127.0.0.1 social_network_test < seeds_accounts.sql
+psql -h 127.0.0.1 social_network_test < seeds_posts.sql
 ```
 
 ## 3. Define the class names
@@ -261,6 +262,13 @@ expect(last_account.username).to eq 'adonlawley'
 
 # 4
 # delete an account
+repo = AccountRepository.new
+repo.delete(1)
+
+result_set = repo.all
+
+expect(result_set.length).to eq 1
+expect(result_set.first.id).to eq '2'
 
 # 5
 # update an account

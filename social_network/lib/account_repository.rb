@@ -1,26 +1,20 @@
-# Repository class
-# (in lib/account_repository.rb)
-
 require_relative './account'
 
 class AccountRepository
-  # Selecting all records
-  # No arguments
   def all
-    # Executes the SQL query:
-    # SELECT id, email, username FROM accounts;
-    # Returns an array of Account objects.
     sql = 'SELECT id, email, username FROM accounts;'
     result_set = DatabaseConnection.exec_params(sql, [])
+
     accounts = []
-    result_set.each do |account|
+
+    result_set.each do |record|
       account = Account.new
-      account.id = account['id']
-      account.email = account['email']
-      account.username = account['username']
+      account.id = record['id']
+      account.email = record['email']
+      account.username = record['username']
       accounts << account
     end
-    return accounts
+    accounts
   end
 
   # Gets a single record by its ID
@@ -29,23 +23,43 @@ class AccountRepository
     # Executes the SQL query:
     # SELECT id, email, username FROM accounts WHERE id = $1;
     # Returns a single Account object.
+    sql = 'SELECT id, email, username FROM accounts WHERE id = $1;'
+    sql_params = [id]
+    result_set = DatabaseConnection.exec_params(sql, sql_params)
+
+    record = result_set[0]
+    account = Account.new
+    account.id = record['id']
+    account.email = record['email']
+    account.username = record['username']
+
+    account
   end
-  
+
   # creates an account
   # with an account object
   def create(account)
-  # Executes the SQL query:
-  # INSERT INTO accounts (email, username) VALUES ($1, $2);
+    # Executes the SQL query:
+    # INSERT INTO accounts (email, username) VALUES ($1, $2);
+    sql = 'INSERT INTO accounts (email, username) VALUES ($1, $2);'
+    sql_params = [account.email, account.username]
+    DatabaseConnection.exec_params(sql, sql_params)
 
-  #returns nothing
+    return nil
+    # returns nothing
   end
 
   # delete an account
   # with an account object
   def delete(id)
-  # Executes the SQL query:
-  # DELETE FROM accounts WHERE id = $1;
+    # Executes the SQL query:
+    # DELETE FROM accounts WHERE id = $1;
+    sql = 'DELETE FROM accounts WHERE id = $1;'
+    sql_params = [id]
 
-  # returns nothing
+    DatabaseConnection.exec_params(sql, sql_params)
+
+    return nil
+    # returns nothing
   end
 end
