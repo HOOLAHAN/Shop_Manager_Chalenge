@@ -272,6 +272,18 @@ expect(result_set.first.id).to eq '2'
 
 # 5
 # update an account
+repo = AccountRepository.new
+account = repo.find(1)
+
+account.email = 'different@test.com'
+account.username = 'different'
+
+repo.update(account)
+
+updated_account = repo.find(1)
+expect(updated_account.email).to eq 'different@test.com'
+expect(updated_account.username).to eq 'different'
+
 
 ```
 

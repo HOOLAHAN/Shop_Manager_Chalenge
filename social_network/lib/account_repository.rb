@@ -62,4 +62,13 @@ class AccountRepository
     return nil
     # returns nothing
   end
+
+  def update(account)
+    sql = 'UPDATE accounts SET email = $1, username = $2 WHERE id = $3'
+    sql_params = [account.email, account.username, account.id]
+
+    DatabaseConnection.exec_params(sql, sql_params)
+
+    return nil
+  end
 end

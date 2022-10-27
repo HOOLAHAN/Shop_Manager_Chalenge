@@ -59,4 +59,18 @@ describe AccountRepository do
     expect(result_set.length).to eq 1
     expect(result_set.first.id).to eq '2'
   end
+
+  it 'updates an account' do
+    repo = AccountRepository.new
+    account = repo.find(1)
+
+    account.email = 'different@test.com'
+    account.username = 'different'
+
+    repo.update(account)
+
+    updated_account = repo.find(1)
+    expect(updated_account.email).to eq 'different@test.com'
+    expect(updated_account.username).to eq 'different'
+  end
 end
