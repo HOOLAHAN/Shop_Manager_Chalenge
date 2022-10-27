@@ -14,22 +14,48 @@ describe Application do
     reset_tables
   end
 
+  it 'when the user inputs 1 it prints a list of albums' do
+    io = double :io
+    expect(io).to receive(:puts).with("Welcome to the music library manager!").ordered
+    expect(io).to receive(:puts).with("").ordered
+    expect(io).to receive(:puts).with("What would you like to do?").ordered
+    expect(io).to receive(:puts).with(" 1 - List all albums").ordered
+    expect(io).to receive(:puts).with(" 2 - List all artists").ordered
+    expect(io).to receive(:puts).with("Enter your choice:").ordered
+    expect(io).to receive(:gets).and_return("1").ordered
+    expect(io).to receive(:puts).with("Here is the list of albums:").ordered
+    expect(io).to receive(:puts).with("1 - Doolittle - 1989 - 1")
+    expect(io).to receive(:puts).with("2 - Surfer Rosa - 1988 - 1")
+    expect(io).to receive(:puts).with("3 - Waterloo - 1974 - 2")
+    expect(io).to receive(:puts).with("4 - Super Trouper - 1980 - 2")
+    expect(io).to receive(:puts).with("5 - Bossanova - 1990 - 1")
 
-  context 'run method' do
-    it 'prints a welcome message, menu and asks the user for input' do
-      io = double :io
-      expect(io).to receive(:puts).with("Welcome to the music library manager!").ordered
-      expect(io).to receive(:puts).with("").ordered
-      expect(io).to receive(:puts).with("What would you like to do?").ordered
-      expect(io).to receive(:puts).with(" 1 - List all albums").ordered
-      expect(io).to receive(:puts).with(" 2 - List all artists").ordered
-      expect(io).to receive(:puts).with("Enter your choice: ").ordered
-      expect(io).to receive(:gets).and_return("1").ordered
-
-      album_repository = AlbumRepository.new
-      artist_repository = ArtistRepository.new
-      app = Application.new(database_name, io, album_repository, artist_repository)
-      app.run 
-    end
+    album_repository = AlbumRepository.new
+    artist_repository = ArtistRepository.new
+    app = Application.new('music_library_test', io, album_repository, artist_repository)
+    app.run 
   end
+
+  it 'when the user inputs 2 it prints a list of artists' do
+    io = double :io
+    expect(io).to receive(:puts).with("Welcome to the music library manager!").ordered
+    expect(io).to receive(:puts).with("").ordered
+    expect(io).to receive(:puts).with("What would you like to do?").ordered
+    expect(io).to receive(:puts).with(" 1 - List all albums").ordered
+    expect(io).to receive(:puts).with(" 2 - List all artists").ordered
+    expect(io).to receive(:puts).with("Enter your choice:").ordered
+    expect(io).to receive(:gets).and_return("2").ordered
+    expect(io).to receive(:puts).with("Here is the list of artists:").ordered
+    expect(io).to receive(:puts).with("1 - Pixies - Rock").ordered
+    expect(io).to receive(:puts).with("2 - ABBA - Pop").ordered
+    expect(io).to receive(:puts).with("3 - Taylor Swift - Pop").ordered
+    expect(io).to receive(:puts).with("4 - Nina Simone - Pop").ordered
+    expect(io).to receive(:puts).with("5 - 50 Cent - RAP").ordered
+
+    album_repository = AlbumRepository.new
+    artist_repository = ArtistRepository.new
+    app = Application.new('music_library_test', io, album_repository, artist_repository)
+    app.run 
+  end
+
 end
