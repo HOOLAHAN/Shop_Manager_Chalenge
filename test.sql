@@ -43,3 +43,46 @@ INSERT INTO albums
   INSERT INTO movies
 	(title, genre, release_year)
 	VALUES('Shrek', 'Animation', 2001);
+
+  SELECT albums.id, albums.title, artists.id, artists.name
+  FROM albums
+    JOIN artists
+    ON artists.id = albums.artist_id;
+
+
+-- Find the album ID, artist ID, album title and artist name of all the albums
+SELECT albums.id AS album_id,
+       artists.id AS artist_id,
+       albums.title,
+       artists.name
+  FROM artists
+    JOIN albums
+    ON albums.artist_id = artists.id;
+
+-- Find the album ID, artist ID, album title and artist name of all the albums
+-- where the associated artist is ABBA.
+-- (in other words, only albums by ABBA).
+SELECT albums.id AS album_id,
+       artists.id AS artist_id,
+       albums.title,
+       artists.name
+  FROM artists
+    JOIN albums
+    ON albums.artist_id = artists.id
+  WHERE artists.name = 'ABBA';
+
+
+SELECT 	albums.id,
+		albums.title 
+FROM albums
+JOIN artists
+ON albums.artist_id = artists.id
+WHERE artists.name = 'Taylor Swift';
+
+SELECT 	albums.id AS album_id,
+		albums.title 
+FROM albums
+JOIN artists
+ON albums.artist_id = artists.id
+WHERE artists.name = 'Nina Simone'
+AND release_year > '1975';
