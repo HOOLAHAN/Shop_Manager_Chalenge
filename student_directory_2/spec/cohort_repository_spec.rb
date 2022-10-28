@@ -22,10 +22,10 @@ describe CohortRepository do
 
   it 'finds cohort 1 with related students' do
     repository = CohortRepository.new
-    cohort = repository.find_with_students('2')
+    cohort = repository.find_with_students(1)
     expect(cohort.cohort_name).to eq('October')
     expect(cohort.starting_date).to eq('2022-01-10')
     expect(cohort.students.length).to eq (2)
-    # expect(cohort.students[0].name).to eq 'Iain'
+    expect(cohort.students[0].name).to eq 'Iain'
   end
 end
