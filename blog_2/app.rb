@@ -2,7 +2,7 @@
 
 require_relative 'lib/database_connection'
 
-DatabaseConnection.connect('blog')
+DatabaseConnection.connect('blog_2')
 
 # Perform a SQL query on the database and get the result set.
 sql = 'SELECT id, title FROM posts;'
