@@ -1,14 +1,28 @@
 # file: app.rb
 
 require_relative 'lib/database_connection'
+require_relative 'lib/post_repository'
 
-DatabaseConnection.connect('blog_2')
+class Application
 
-# Perform a SQL query on the database and get the result set.
-sql = 'SELECT id, title FROM posts;'
+  def initialize (database_name)
+    DatabaseConnection.connect(database_name)
+    @post = PostRepository.new
+  end
 
-result = DatabaseConnection.exec_params(sql, [])
+  def search_posts(tag_name)
+    result = @post.find_by_tag(tag_name)
+    puts "Posts with #{tag_name} tag:"
+    result.each do |item|
+      puts "* #{item.id}: #{item.title}"
+    end
+  end
 
-result.each do |record|
-  p record
+end
+
+if __FILE__ == $0
+  app = Application.new(
+    'blog_2',
+  )
+  app.search_posts('coding')
 end
