@@ -1,5 +1,4 @@
-TRUNCATE TABLE cohorts RESTART IDENTITY CASCADE;
-TRUNCATE TABLE students RESTART IDENTITY CASCADE;
+TRUNCATE TABLE cohorts, students RESTART IDENTITY;
 
 INSERT INTO cohorts (cohort_name, starting_date) VALUES ('October', '01/10/2022');
 INSERT INTO cohorts (cohort_name, starting_date) VALUES ('October', '01/10/2022');

@@ -4,9 +4,9 @@ require_relative 'cohort'
 require_relative 'student'
 
 class CohortRepository
-  def find_with_students(id)
+  def find_with_students(cohort_id)
       
-    sql = 'SELECT  cohorts.id AS "id", 
+    sql = 'SELECT  cohorts.id AS "cohort_id", 
             cohorts.cohort_name AS "cohort_name", 
             cohorts.starting_date AS "starting_date",
             students.name AS "name"
@@ -15,13 +15,13 @@ class CohortRepository
     ON students.cohort_id = cohorts.id
     WHERE cohorts.id = $1;'
     
-    sql_params = [id]
+    sql_params = [cohort_id]
 
     result = DatabaseConnection.exec_params(sql, sql_params)
 
     cohort = Cohort.new
 
-    cohort.id = result.first['id']
+    cohort.id = result.first["cohort_id"]
     cohort.cohort_name = result.first['cohort_name']
     cohort.starting_date = result.first['starting_date']
     cohort.students = []
@@ -34,5 +34,6 @@ class CohortRepository
       cohort.students << student
     end
     return cohort
+
   end
 end

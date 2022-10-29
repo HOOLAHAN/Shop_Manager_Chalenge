@@ -86,3 +86,25 @@ JOIN artists
 ON albums.artist_id = artists.id
 WHERE artists.name = 'Nina Simone'
 AND release_year > '1975';
+
+
+
+-- Select all the tags associated with a given post.
+-- Note how we're using two different joins to "link"
+-- all the three tables together:
+--    * first, by matching only records in the join table for the given post
+--    * second, by matching only tags for these records in the join table
+SELECT tags.id, tags.name
+  FROM tags 
+    JOIN posts_tags ON posts_tags.tag_id = tags.id
+    JOIN posts ON posts_tags.post_id = posts.id
+    WHERE posts.id = 2;
+
+
+-- Use a SELECT query with a JOIN to retrieve all the posts associated with the tag 'travel'.
+SELECT posts.id, posts.title
+  FROM posts
+  	JOIN posts_tags ON posts_tags.post_id = posts.id
+  	JOIN tags ON posts_tags.tag_id = tags.id	
+    WHERE tag_id = 2;
+
