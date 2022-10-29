@@ -1,7 +1,6 @@
 # (in lib/post_repository.rb)
 
 require_relative './post'
-require_relative './tag'
 
 class PostRepository
   def find_by_tag(name)
