@@ -1,12 +1,11 @@
-# Two Tables Design Recipe Template - Shop Manager Project
+# Two Tables (Many-to-Many) Design Recipe Template
 
-_Copy this recipe template to design and create two related database tables from a specification._
+_Copy this recipe template to design and create two related database tables having a Many-to-Many relationship._
 
 ## 1. Extract nouns from the user stories or specification
 
 ```
-# EXAMPLE USER STORY:
-# (analyse only the relevant part - here the final line).
+# EXAMPLE USER STORIES:
 
 As a shop manager
 So I can know which items I have in stock
@@ -39,7 +38,7 @@ I want to be able to create a new order.
 
 ```
 Nouns:
-album, title, release year, artist, name
+item, price, stock, order, name, date
 ```
 
 ## 2. Infer the Table Name and Columns
@@ -48,16 +47,16 @@ Put the different nouns in this table. Replace the example with your own nouns.
 
 | Record                | Properties          |
 | --------------------- | ------------------  |
-| album                 | title, release year
-| artist                | name
+| item                  | item, price, stock, order_id
+| order                 | name, date, item_id
 
-1. Name of the first table (always plural): `albums` 
+1. Name of the first table (always plural): `items` 
 
-    Column names: `title`, `release_year`
+    Column names: `item`, `price`, `stock`, `order_id`
 
-2. Name of the second table (always plural): `artists` 
+2. Name of the second table (always plural): `orders` 
 
-    Column names: `name`
+    Column names: `name`, `date`, `item_id`
 
 ## 3. Decide the column types.
 
@@ -69,70 +68,78 @@ Remember to **always** have the primary key `id` as a first column. Its type wil
 
 ```
 # EXAMPLE:
-Table: albums
+Table: items
 id: SERIAL
-title: text
-release_year: int
-Table: artists
+item: text
+price: int
+stock: int
+order_id text
+Table: orders
 id: SERIAL
 name: text
+date: date
+item_id text
 ```
 
-## 4. Decide on The Tables Relationship
+## 4. Design the Many-to-Many relationship
 
-Most of the time, you'll be using a **one-to-many** relationship, and will need a **foreign key** on one of the two tables.
+Make sure you can answer YES to these two questions:
 
-To decide on which one, answer these two questions:
-
-1. Can one [TABLE ONE] have many [TABLE TWO]? (Yes/No)
-2. Can one [TABLE TWO] have many [TABLE ONE]? (Yes/No)
-
-You'll then be able to say that:
-
-1. **[A] has many [B]**
-2. And on the other side, **[B] belongs to [A]**
-3. In that case, the foreign key is in the table [B]
-
-Replace the relevant bits in this example with your own:
+1. Can one [TABLE ONE] have many [TABLE TWO]? (Yes)
+2. Can one [TABLE TWO] have many [TABLE ONE]? (Yes)
 
 ```
 # EXAMPLE
-1. Can one artist have many albums? YES
-2. Can one album have many artists? NO
--> Therefore,
--> An artist HAS MANY albums
--> An album BELONGS TO an artist
--> Therefore, the foreign key is on the albums table.
+1. Can one item have many order? YES
+2. Can one order have many items? YES
 ```
 
-*If you can answer YES to the two questions, you'll probably have to implement a Many-to-Many relationship, which is more complex and needs a third table (called a join table).*
+_If you would answer "No" to one of these questions, you'll probably have to implement a One-to-Many relationship, which is simpler. Use the relevant design recipe in that case._
+
+## 5. Design the Join Table
+
+The join table usually contains two columns, which are two foreign keys, each one linking to a record in the two other tables.
+
+The naming convention is `table1_table2`.
+
+```
+# EXAMPLE
+Join table for tables: items and orders
+Join table name: items_orders
+Columns: item_id, order_id
+```
 
 ## 4. Write the SQL.
 
 ```sql
 -- EXAMPLE
--- file: albums_table.sql
+-- file: posts_tags.sql
 -- Replace the table name, columm names and types.
--- Create the table without the foreign key first.
-CREATE TABLE artists (
+-- Create the first table.
+CREATE TABLE items (
   id SERIAL PRIMARY KEY,
-  name text,
+  item text,
+  price text,
+  stock text
 );
--- Then the table with the foreign key first.
-CREATE TABLE albums (
+-- Create the second table.
+CREATE TABLE orders (
   id SERIAL PRIMARY KEY,
-  title text,
-  release_year int,
--- The foreign key name is always {other_table_singular}_id
-  artist_id int,
-  constraint fk_artist foreign key(artist_id)
-    references artists(id)
-    on delete cascade
+  name text
+  date date
+);
+-- Create the join table.
+CREATE TABLE items_orders (
+  item_id int,
+  order_id int,
+  constraint fk_item foreign key(item_id) references items(id) on delete cascade,
+  constraint fk_order foreign key(order_id) references orders(id) on delete cascade,
+  PRIMARY KEY (item_id, order_id)
 );
 ```
 
 ## 5. Create the tables.
 
 ```bash
-psql -h 127.0.0.1 database_name < albums_table.sql
+psql -h 127.0.0.1 shop_manager < items_orders.sql
 ```
