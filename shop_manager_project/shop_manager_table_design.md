@@ -125,7 +125,7 @@ CREATE TABLE items (
 -- Create the second table.
 CREATE TABLE orders (
   id SERIAL PRIMARY KEY,
-  name text
+  name text,
   date date
 );
 -- Create the join table.

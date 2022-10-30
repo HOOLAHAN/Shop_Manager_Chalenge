@@ -111,7 +111,11 @@ Define the attributes of your Model class. You can usually map the table columns
 # (in lib/item.rb)
 class Item
   # Replace the attributes by your own columns.
-  attr_accessor :id, :item, :price, :stock
+  attr_accessor :id, :item, :price, :stock, :stock_array
+
+  def initialize
+  @stock_array = []
+  end
 end
 
 # Table name: orders
@@ -119,7 +123,10 @@ end
 # (in lib/order.rb)
 class Order
   # Replace the attributes by your own columns.
-  attr_accessor :id, :name, :date
+  attr_accessor :id, :name, :date, :order_array
+  def initialize
+  @order_array = []
+  end
 end
 ```
 
