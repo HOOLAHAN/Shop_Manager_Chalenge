@@ -31,6 +31,7 @@ describe ItemRepository do
   it 'Creates an item' do
     repo = ItemRepository.new
     new_item = Item.new
+    new_item.id = '8'
     new_item.item = 'Jam'
     new_item.price = '150'
     new_item.stock = '20'
@@ -38,6 +39,7 @@ describe ItemRepository do
     items = repo.stock_list
     last_item = items.last
 
+    expect(last_item.id).to eq '8'
     expect(last_item.item).to eq 'Jam'
     expect(last_item.price).to eq '150'
     expect(last_item.stock).to eq '20'

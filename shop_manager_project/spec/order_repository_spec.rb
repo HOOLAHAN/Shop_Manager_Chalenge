@@ -29,12 +29,13 @@ describe OrderRepository do
   it 'Creates an order' do
     repo = OrderRepository.new
     new_order = Order.new
-    new_order.item = 'Frank'
+    new_order.id = '5'
+    new_order.name = 'Frank'
     new_order.date = '2022-01-05'
     repo.create(new_order) #=> nil
     orders = repo.order_history
     last_order = orders.last
-
+    expect(new_order.id).to eq '5'
     expect(last_order.name).to eq 'Frank'
     expect(last_order.date).to eq'2022-01-05'
   end

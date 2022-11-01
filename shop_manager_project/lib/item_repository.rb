@@ -9,28 +9,31 @@ class ItemRepository
 
     sql = 'SELECT id, item, price, stock FROM items;'
     result_set = DatabaseConnection.exec_params(sql, [])
-    stock_list = []
+    stocks_list = []
     result_set.each do |record|
       list = Item.new
       list.id = record['id']
       list.item = record['item']
       list.price = record['price']
       list.stock = record['stock']
-      stock_list << list
+      stocks_list << list
     end
-    return stock_list
+    # stocks_list.each do |cell|
+    #   puts cell.values.join(" - ")
+    # end
+    return stocks_list
   end
+
   # Creates a single record by its name, price, stock
   # Three arguments: the id (item, price, stock)
   def create(new_item)
     # Executes the SQL query:
-    # INSERT INTO items (item, price, stock) VALUES ($1, $2, $3);
+    # INSERT INTO items (id, item, price, stock) VALUES ($1, $2, $3, $4);
     # Returns nothing
-    sql = 'INSERT INTO items (item, price, stock) VALUES ($1, $2, $3);'
-    sql_params = [new_item.item, new_item.price, new_item.stock]
+    sql = 'INSERT INTO items (id, item, price, stock) VALUES ($1, $2, $3, $4);'
+    sql_params = [new_item.id, new_item.item, new_item.price, new_item.stock]
     DatabaseConnection.exec_params(sql, sql_params)
     return nil
-
   end
 
 end
