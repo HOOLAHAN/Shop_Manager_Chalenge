@@ -39,6 +39,7 @@ class Application
     elsif user_input == "4"
       return create_new_order
     elsif user_input == "5"
+      @io.puts "Goodbye."
       return false
     else
       return false
