@@ -11,8 +11,6 @@ class Application
   def initialize(database_name, io, item_repository, order_repository)
     DatabaseConnection.connect(database_name)
     @io = io
-    @item_repository = item_repository
-    @order_repository = order_repository
     @item = ItemRepository.new
     @order = OrderRepository.new
   end
@@ -42,6 +40,7 @@ class Application
       @io.puts "Goodbye."
       return false
     else
+      @io.puts "Input error."
       return false
     end
   end

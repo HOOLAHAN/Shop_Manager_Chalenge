@@ -108,7 +108,7 @@ describe Application do
     end
   end
 
-  it 'when the user inputs 5 it exits the program' do
+  it 'when the user inputs 5 it exits the program with message' do
     io = double :io
     expect(io).to receive(:puts).with("Welcome to the shop management program!").ordered
     expect(io).to receive(:puts).with("What would you like to do?").ordered
@@ -125,5 +125,21 @@ describe Application do
     app.run 
   end
 
-  # write test for input other than 1-5
+  it 'when the users inpput is not 1-5 it exits the program with message' do
+    io = double :io
+    expect(io).to receive(:puts).with("Welcome to the shop management program!").ordered
+    expect(io).to receive(:puts).with("What would you like to do?").ordered
+    expect(io).to receive(:puts).with("1 = list all shop items").ordered
+    expect(io).to receive(:puts).with("2 = create a new item").ordered
+    expect(io).to receive(:puts).with("3 = list all orders").ordered
+    expect(io).to receive(:puts).with("4 = create a new order").ordered
+    expect(io).to receive(:puts).with("5 = exit").ordered
+    expect(io).to receive(:gets).and_return("6")
+    expect(io).to receive(:puts).with("Input error.")
+    item_repository = ItemRepository.new
+    order_repository = OrderRepository.new
+    app = Application.new('shop_manager_test', io, item_repository, order_repository)
+    app.run
+  end
+  
 end
