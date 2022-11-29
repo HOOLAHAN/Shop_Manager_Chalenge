@@ -154,6 +154,8 @@ describe Application do
     repo = Application.new('shop_manager_test', io, item_repository, order_repository)
     result = repo.select_price('1')
     expect(result).to eq '135'
+    result2 = repo.select_price('2')
+    expect(result2).to eq '90'
   end
 
 end

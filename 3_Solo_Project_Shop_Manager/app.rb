@@ -117,8 +117,6 @@ class Application
     @io.puts "TOTAL: £#{total.sum/100}"
   end
 
-
-
   def create_new_order
     fill_order
     @io.puts "Please enter customer name:"
