@@ -94,17 +94,22 @@ describe Application do
       expect(io).to receive(:puts).with("4 = create a new order").ordered
       expect(io).to receive(:puts).with("5 = exit").ordered
       expect(io).to receive(:gets).and_return("4").ordered
+      expect(io).to receive(:puts).with("Please confirm item number to be added to order. To complete type 'stop'").ordered
+      expect(io).to receive(:gets).and_return("1").ordered
+      expect(io).to receive(:puts).with("Please confirm item number to be added to order. To complete type 'stop'").ordered
+      expect(io).to receive(:gets).and_return("stop").ordered
+      expect(io).to receive(:puts).with("Here is your order:").ordered
+      expect(io).to receive(:puts).with("1 - Bread - 135").ordered
+      expect(io).to receive(:puts).with("TOTAL: £1.35").ordered
       expect(io).to receive(:puts).with("Please enter customer name:").ordered
       expect(io).to receive(:gets).and_return("Jacob").ordered
-      expect(io).to receive(:puts).with("Please enter order date:").ordered
-      expect(io).to receive(:gets).and_return("2022-01-05").ordered
       item_repository = ItemRepository.new
       order_repository = OrderRepository.new
       app = Application.new('shop_manager_test', io, item_repository, order_repository)
       app.run
       last_order = order_repository.order_history.last
       expect(last_order.name).to eq "Jacob"
-      expect(last_order.date).to eq "2022-01-05"
+      expect(last_order.date).to eq Time.new.strftime("%Y-%m-%d")
     end
   end
 
@@ -142,4 +147,13 @@ describe Application do
     app.run
   end
   
+  it 'select_price method' do
+    io = double :io
+    item_repository = ItemRepository.new
+    order_repository = OrderRepository.new
+    repo = Application.new('shop_manager_test', io, item_repository, order_repository)
+    result = repo.select_price('1')
+    expect(result).to eq '135'
+  end
+
 end

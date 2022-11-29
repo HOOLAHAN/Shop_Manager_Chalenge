@@ -75,11 +75,55 @@ class Application
     end
   end
 
+  def print_an_item(id)
+    sql = 'SELECT id, item, price FROM items WHERE id = $1;'
+    sql_params = [id]
+    result_set = DatabaseConnection.exec_params(sql, sql_params)
+    result_set.each do |cell|
+      @io.puts cell.values.join(" - ")
+    end
+  end
+
+  def select_price(id)
+    sql = 'SELECT price FROM items WHERE id = $1;'
+    sql_params = [id]
+    result_set = DatabaseConnection.exec_params(sql, sql_params)
+    return result_set[0]['price']
+  end
+
+  def fill_order
+    @order_array = []
+    repo = ItemRepository.new
+    total_in_shop = repo.stock_list.length  
+    until false do
+      @io.puts "Please confirm item number to be added to order. To complete type 'stop'"
+      item = @io.gets.chomp
+      if item == 'stop'
+        break
+      elsif  item.to_i > total_in_shop || item.to_i < 1
+        @io.puts "Please enter a valid item number"
+      else
+        @order_array << item
+      end
+    end
+    @io.puts "Here is your order:"
+    @order_array.each do |item|
+      print_an_item(item)
+    end
+    total = []
+    @order_array.each do |item|
+      total << select_price(item).to_f
+    end
+    @io.puts "TOTAL: £#{total.sum/100}"
+  end
+
+
+
   def create_new_order
+    fill_order
     @io.puts "Please enter customer name:"
     customer_name = @io.gets.chomp
-    @io.puts "Please enter order date:"
-    order_date = @io.gets.chomp
+    order_date = Time.new.strftime("%Y/%m/%d")
     id = (@order.order_history.length + 1).to_s
     sql = 'INSERT INTO orders (id, name, date) VALUES ($1, $2, $3);'
     sql_params = [id, customer_name, order_date]
