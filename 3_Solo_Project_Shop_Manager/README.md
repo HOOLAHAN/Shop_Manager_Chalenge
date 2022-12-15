@@ -63,8 +63,8 @@ Here's a list of all shop items:
 
 # Test coverage
 
-![alt text](insert image URL)
+![alt text](https://github.com/HOOLAHAN/database_exercises/blob/main/3_Solo_Project_Shop_Manager/Coverage.png)
 
 # Example run-through
 
-![alt text](insert image URL)
+![alt text](https://github.com/HOOLAHAN/database_exercises/blob/main/3_Solo_Project_Shop_Manager/Example_Run_Through.png)
