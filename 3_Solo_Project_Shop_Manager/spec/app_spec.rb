@@ -54,11 +54,12 @@ describe Application do
       expect(io).to receive(:gets).and_return("150").ordered
       expect(io).to receive(:puts).with("Please enter item stock quantity:").ordered
       expect(io).to receive(:gets).and_return("50").ordered
+      expect(io).to receive(:puts).with("You have added 50 x Coca Cola to the stocklist with a unit price of 150p/item").ordered
       item_repository = ItemRepository.new
       order_repository = OrderRepository.new
       app = Application.new('shop_manager_test', io, item_repository, order_repository)
       app.run
-      last_item = item_repository.stock_list.last
+      last_item = item_repository.stock_list_array.last
       expect(last_item.item).to eq "Coca Cola"
       expect(last_item.price).to eq "150"
       expect(last_item.stock).to eq "50"
@@ -94,15 +95,18 @@ describe Application do
       expect(io).to receive(:puts).with("4 = create a new order").ordered
       expect(io).to receive(:puts).with("5 = exit").ordered
       expect(io).to receive(:gets).and_return("4").ordered
+      expect(io).to receive(:puts).with("Please enter customer name:").ordered
+      expect(io).to receive(:gets).and_return("Jacob").ordered
       expect(io).to receive(:puts).with("Please confirm item number to be added to order. To complete type 'stop'").ordered
       expect(io).to receive(:gets).and_return("1").ordered
+      expect(io).to receive(:puts).with("Please confirm item number to be added to order. To complete type 'stop'").ordered
+      expect(io).to receive(:gets).and_return("2").ordered
       expect(io).to receive(:puts).with("Please confirm item number to be added to order. To complete type 'stop'").ordered
       expect(io).to receive(:gets).and_return("stop").ordered
       expect(io).to receive(:puts).with("Here is your order:").ordered
       expect(io).to receive(:puts).with("1 - Bread - 135").ordered
-      expect(io).to receive(:puts).with("TOTAL: £1.35").ordered
-      expect(io).to receive(:puts).with("Please enter customer name:").ordered
-      expect(io).to receive(:gets).and_return("Jacob").ordered
+      expect(io).to receive(:puts).with("2 - Milk - 90").ordered
+      expect(io).to receive(:puts).with("TOTAL: £2.25").ordered
       item_repository = ItemRepository.new
       order_repository = OrderRepository.new
       app = Application.new('shop_manager_test', io, item_repository, order_repository)
@@ -130,7 +134,7 @@ describe Application do
     app.run 
   end
 
-  it 'when the users inpput is not 1-5 it exits the program with message' do
+  it 'when the users input is not 1-5 it exits the program with message' do
     io = double :io
     expect(io).to receive(:puts).with("Welcome to the shop management program!").ordered
     expect(io).to receive(:puts).with("What would you like to do?").ordered
@@ -146,16 +150,30 @@ describe Application do
     app = Application.new('shop_manager_test', io, item_repository, order_repository)
     app.run
   end
-  
-  it 'select_price method' do
+
+  it 'when an order is created it updates the items_order join table' do
+    order_repository = OrderRepository.new
+    result = order_repository.get_all_orders
+    expect(result.ntuples).to eq 10 # THE SEED DATA STARTS WITH 10 ENTRIES IN THE ITEMS_ORDERS TABLE
     io = double :io
+    expect(io).to receive(:puts).with("Please enter customer name:").ordered
+    expect(io).to receive(:gets).and_return("Jiimmy").ordered
+    expect(io).to receive(:puts).with("Please confirm item number to be added to order. To complete type 'stop'").ordered
+    expect(io).to receive(:gets).and_return("1").ordered
+    expect(io).to receive(:puts).with("Please confirm item number to be added to order. To complete type 'stop'").ordered
+    expect(io).to receive(:gets).and_return("2").ordered
+    expect(io).to receive(:puts).with("Please confirm item number to be added to order. To complete type 'stop'").ordered
+    expect(io).to receive(:gets).and_return("stop").ordered
+    expect(io).to receive(:puts).with("Here is your order:").ordered
+    expect(io).to receive(:puts).with("1 - Bread - 135").ordered
+    expect(io).to receive(:puts).with("2 - Milk - 90").ordered
+    expect(io).to receive(:puts).with("TOTAL: £2.25").ordered
     item_repository = ItemRepository.new
     order_repository = OrderRepository.new
-    repo = Application.new('shop_manager_test', io, item_repository, order_repository)
-    result = repo.select_price('1')
-    expect(result).to eq '135'
-    result2 = repo.select_price('2')
-    expect(result2).to eq '90'
+    new_test_2 = Application.new('shop_manager_test', io, item_repository, order_repository)
+    new_test_2.create_new_order
+    result_2 = order_repository.get_all_orders
+    expect(result_2.ntuples).to eq 12 # ITEMS_ORDERS TABLE CONFIRMS TWO ITEMS HAVE BEEN ORDERED
   end
 
 end

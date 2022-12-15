@@ -16,7 +16,7 @@ describe ItemRepository do
   
   it 'Gets a stock list of items' do
     repo = ItemRepository.new
-    items = repo.stock_list
+    items = repo.stock_list_array
     expect(items.length).to eq 7
     expect(items[0].id).to eq '1'
     expect(items[0].item).to eq 'Bread'
@@ -28,17 +28,16 @@ describe ItemRepository do
     expect(items[1].stock).to eq '40'
   end
 
-  it 'Creates an item' do
+  it 'adds an item to the stock list' do
     repo = ItemRepository.new
-    new_item = Item.new
-    new_item.id = '8'
-    new_item.item = 'Jam'
-    new_item.price = '150'
-    new_item.stock = '20'
-    repo.create(new_item) #=> nil
-    items = repo.stock_list
-    last_item = items.last
+    id = '8'
+    item_name = 'Jam'
+    item_price = '150'
+    item_stock = '20'
+    repo.add_item(id, item_name, item_price, item_stock)
 
+    items = repo.stock_list_array
+    last_item = items.last
     expect(last_item.id).to eq '8'
     expect(last_item.item).to eq 'Jam'
     expect(last_item.price).to eq '150'

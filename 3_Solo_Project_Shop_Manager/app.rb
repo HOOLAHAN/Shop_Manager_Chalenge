@@ -33,7 +33,7 @@ class Application
     elsif user_input == "2"
       return add_stock_item
     elsif user_input == "3"
-      return list_all_orders
+      return print_all_orders
     elsif user_input == "4"
       return create_new_order
     elsif user_input == "5"
@@ -41,60 +41,39 @@ class Application
       return false
     else
       @io.puts "Input error."
-      return false
     end
   end
 
-  def print_all_items
-    sql = 'SELECT id, item, price, stock FROM items;'
-    result_set = DatabaseConnection.exec_params(sql, [])
-    result_set.each do |cell|
+  def print_all_items # OPTION 1
+    @item.stock_list.each do |cell|
       @io.puts cell.values.join(" - ")
     end
   end
- 
-  def add_stock_item
+
+  def add_stock_item # OPTION 2
     @io.puts "Please enter item name:"
     item_name = @io.gets.chomp
     @io.puts "Please enter item unit price in pence:"
     item_price = @io.gets.chomp
     @io.puts "Please enter item stock quantity:"
     item_stock = @io.gets.chomp
-    id = (@item.stock_list.length + 1).to_s
-    sql = 'INSERT INTO items (id, item, price, stock) VALUES ($1, $2, $3, $4);'
-    sql_params = [id, item_name, item_price, item_stock]
-    result_set = DatabaseConnection.exec_params(sql, sql_params)
-    return nil
+    id = (@item.stock_list.ntuples + 1).to_s
+    @item.add_item(id, item_name, item_price, item_stock)
+    @io.puts "You have added #{item_stock} x #{item_name} to the stocklist with a unit price of #{item_price}p/item"
   end
-
-  def list_all_orders
-    sql = 'SELECT id, name, date FROM orders;'
-    result_set = DatabaseConnection.exec_params(sql, [])
-    result_set.each do |cell|
+  
+  def print_all_orders # OPTION 3
+    @order.list_all_orders.each do |cell|
       @io.puts cell.values.join(" - ")
     end
   end
-
-  def print_an_item(id)
-    sql = 'SELECT id, item, price FROM items WHERE id = $1;'
-    sql_params = [id]
-    result_set = DatabaseConnection.exec_params(sql, sql_params)
-    result_set.each do |cell|
-      @io.puts cell.values.join(" - ")
-    end
-  end
-
-  def select_price(id)
-    sql = 'SELECT price FROM items WHERE id = $1;'
-    sql_params = [id]
-    result_set = DatabaseConnection.exec_params(sql, sql_params)
-    return result_set[0]['price']
-  end
-
-  def fill_order
+  
+  def create_new_order # OPTION 4
     @order_array = []
-    repo = ItemRepository.new
-    total_in_shop = repo.stock_list.length  
+    total_in_shop = @item.stock_list_array.length
+    @io.puts "Please enter customer name:"
+    customer_name = @io.gets.chomp
+    order_date = Time.new.strftime("%Y/%m/%d")
     until false do
       @io.puts "Please confirm item number to be added to order. To complete type 'stop'"
       item = @io.gets.chomp
@@ -108,25 +87,25 @@ class Application
     end
     @io.puts "Here is your order:"
     @order_array.each do |item|
-      print_an_item(item)
+      print_item_in_basket(item)
     end
     total = []
     @order_array.each do |item|
-      total << select_price(item).to_f
+      total << @item.select_price(item).to_f
     end
     @io.puts "TOTAL: £#{total.sum/100}"
-  end
+    
+    order_id = @order.list_all_orders.ntuples + 1
+    @order.add_order(order_id, customer_name, order_date)
+    @order_array.each do |item|
+      @order.add_to_items_orders(item, order_id)
+    end
+  end 
 
-  def create_new_order
-    fill_order
-    @io.puts "Please enter customer name:"
-    customer_name = @io.gets.chomp
-    order_date = Time.new.strftime("%Y/%m/%d")
-    id = (@order.order_history.length + 1).to_s
-    sql = 'INSERT INTO orders (id, name, date) VALUES ($1, $2, $3);'
-    sql_params = [id, customer_name, order_date]
-    result_set = DatabaseConnection.exec_params(sql, sql_params)
-    return nil
+  def print_item_in_basket(id)
+    @item.print_an_item(id).each do |cell|
+      @io.puts cell.values.join(" - ")
+    end
   end
 
 end
