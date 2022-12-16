@@ -3,9 +3,9 @@
 class ItemRepository
 
   def stock_list_array
+    stocks_list = []
     sql = 'SELECT id, item, price, stock FROM items;'
     result_set = DatabaseConnection.exec_params(sql, [])
-    stocks_list = []
     result_set.each do |record|
       list = Item.new
       list.id = record['id']
@@ -42,6 +42,28 @@ class ItemRepository
     sql_params = [id]
     result_set = DatabaseConnection.exec_params(sql, sql_params)
     return result_set[0]['price']
+  end
+
+  def select_stock(id)
+    sql = 'SELECT stock FROM items WHERE id = $1;'
+    sql_params = [id]
+    result_set = DatabaseConnection.exec_params(sql, sql_params)
+    return result_set[0]['stock'].to_i
+  end
+
+  def reduce_stock_level(item_id)
+    new_stock = (select_stock(item_id) -1).to_s
+    sql = 'UPDATE items SET stock = $2 WHERE id = $1;'
+    sql_params = [item_id, new_stock]
+    result_set = DatabaseConnection.exec_params(sql, sql_params)
+    return nil
+  end
+
+  def find_an_item_by_id(id)
+    sql = 'SELECT id, item, price, stock FROM items WHERE id = $1;'
+    sql_params = [id]
+    result_set = DatabaseConnection.exec_params(sql, sql_params)
+    return result_set
   end
 
 end

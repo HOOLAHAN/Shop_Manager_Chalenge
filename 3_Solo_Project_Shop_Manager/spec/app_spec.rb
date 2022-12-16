@@ -176,4 +176,39 @@ describe Application do
     expect(result_2.ntuples).to eq 12 # ITEMS_ORDERS TABLE CONFIRMS TWO ITEMS HAVE BEEN ORDERED
   end
 
+  it 'when an order is created it updates the items table to reflect the new stock value' do
+    repo = ItemRepository.new
+
+    item_1 = repo.find_an_item_by_id('1')
+    expect(item_1[0]['stock']).to eq '50' # STARTING STOCK LEVEL OF BREAD
+
+    item_2 = repo.find_an_item_by_id('2')
+    expect(item_2[0]['stock']).to eq '40' # STARTING STOCK LEVEL OF MILK
+
+    io = double :io
+    expect(io).to receive(:puts).with("Please enter customer name:").ordered
+    expect(io).to receive(:gets).and_return("Jiimmy").ordered
+    expect(io).to receive(:puts).with("Please confirm item number to be added to order. To complete type 'stop'").ordered
+    expect(io).to receive(:gets).and_return("1").ordered
+    expect(io).to receive(:puts).with("Please confirm item number to be added to order. To complete type 'stop'").ordered
+    expect(io).to receive(:gets).and_return("2").ordered
+    expect(io).to receive(:puts).with("Please confirm item number to be added to order. To complete type 'stop'").ordered
+    expect(io).to receive(:gets).and_return("stop").ordered
+    expect(io).to receive(:puts).with("Here is your order:").ordered
+    expect(io).to receive(:puts).with("1 - Bread - 135").ordered
+    expect(io).to receive(:puts).with("2 - Milk - 90").ordered
+    expect(io).to receive(:puts).with("TOTAL: £2.25").ordered
+    item_repository = ItemRepository.new
+    order_repository = OrderRepository.new
+    new_test_2 = Application.new('shop_manager_test', io, item_repository, order_repository)
+    new_test_2.create_new_order
+
+    item_1 = repo.find_an_item_by_id('1')
+    expect(item_1[0]['stock']).to eq '49' # STOCK LEVEL OF BREAD HAS BEEN REDUCED BY ONE
+
+    item_2 = repo.find_an_item_by_id('2')
+    expect(item_2[0]['stock']).to eq '39' # STOCK LEVEL OF MILK HAS BEEN REDUCED BY ONE
+
+  end
+
 end

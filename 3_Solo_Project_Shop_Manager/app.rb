@@ -100,7 +100,14 @@ class Application
     @order_array.each do |item|
       @order.add_to_items_orders(item, order_id)
     end
-  end 
+    update_stock_list
+  end
+
+  def update_stock_list
+    @order_array.each do |item|
+      @item.reduce_stock_level(item)
+    end
+  end
 
   def print_item_in_basket(id)
     @item.print_an_item(id).each do |cell|
