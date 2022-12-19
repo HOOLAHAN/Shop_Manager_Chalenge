@@ -47,7 +47,7 @@ Here's a list of all shop items:
 
 *Make a local copy of the files*
 
-````git clone ....````
+````git clone https://github.com/HOOLAHAN/Shop_Manager_Chalenge/tree/main/3_Solo_Project_Shop_Manager_Challenge````
 
 *Install the dependencies*
 
@@ -63,8 +63,8 @@ Here's a list of all shop items:
 
 # Test coverage
 
-![alt text](https://github.com/HOOLAHAN/database_exercises/blob/main/3_Solo_Project_Shop_Manager/Coverage.png)
+![alt text](https://github.com/HOOLAHAN/Shop_Manager_Chalenge/blob/main/3_Solo_Project_Shop_Manager_Challenge/Coverage.png)
 
 # Example run-through
 
-![alt text](https://github.com/HOOLAHAN/database_exercises/blob/main/3_Solo_Project_Shop_Manager/Example_Run_Through.png)
+![alt text](https://github.com/HOOLAHAN/Shop_Manager_Chalenge/blob/main/3_Solo_Project_Shop_Manager_Challenge/Example_Run_Through.png)
